@@ -29,11 +29,11 @@ class Fruits(object):
         Fruits.count += count
 
 def main():
-    apples = Fruits("apples", 3);
-    pears = Fruits("pears", 4);
-    print(apples.count)
-    print(pears.count)
-    print(Fruits.count)
+    apples = Fruits("apples", 3)
+    pears = Fruits("pears", 4)
+    print(apples.count)              # gives 3
+    print(pears.count)               # gives 4
+    print(Fruits.count)              # gives 7
     print(apples.__class__.count)    # This is Fruit.count
     print(type(pears).count)         # So is this
 
