@@ -1,33 +1,47 @@
-class Student:
-    def __init__(self, name, grade, age):
+from operator import attrgetter
+
+class Associate:
+    def __init__(self, name, dept, salary):
         self.name = name
-        self.grade = grade
-        self.age = age
+        self.dept = dept
+        self.salary = salary
 
     def __repr__(self):
-        return repr((self.name, self.grade, self.age))
+        return '{' + self.name + ', ' + self.dept + ', ' + str(self.salary) + '}'
 
-student_objects = [
-    Student('john', 'A', 15),
-    Student('jane', 'B', 12),
-    Student('dave', 'B', 10),
-]
+if __name__ == '__main__':
+    associates = [
+        Associate('James', 'Finance', 80000),
+        Associate('Robert', 'Construction', 60000),
+        Associate('James', 'Telecom', 70000)
+    ]
 
-student_tuples = [
-    ('john', 'A', 15),
-    ('jane', 'B', 12),
-    ('dave', 'B', 10),
-]
+    # 1. Sort by only `dept` attribute
+    associates.sort(key=lambda x: x.dept)
 
-# lambda function
-sorted(student_objects, key=lambda student: student.age)   # sort by age
-# >> [('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
+    # [{Robert, Construction, 60000}, {James, Finance, 80000}, {James, Telecom, 70000}]
+    print(associates)
 
-# The operator module functions allow multiple levels of sorting.
-from operator import itemgetter, attrgetter
+    # 2. Sort by `name` attribute, followed by `dept` attribute
+    associates.sort(key=lambda x: (x.name, x.dept))
 
-sorted(student_tuples, key=itemgetter(1, 2))               # sort by grade then age
-# >> [('john', 'A', 15), ('dave', 'B', 10), ('jane', 'B', 12)]
+    # [{James, Finance, 80000}, {James, Telecom, 70000}, {Robert, Construction, 60000}]
+    print(associates)
 
-sorted(student_objects, key=attrgetter('grade', 'age'))    # sort by grade then age
-# >> [('john', 'A', 15), ('dave', 'B', 10), ('jane', 'B', 12)]
+    # 3. Sort by `name` attribute in reverse order, followed by `dept` attribute in reverse order
+    associates.sort(key=lambda x: (x.name, x.dept), reverse=True)
+
+    # [{Robert, Construction, 60000}, {James, Telecom, 70000}, {James, Finance, 80000}]
+    print(associates)
+
+    # 4. Sort by `name` attribute in the natural order, followed by numeric `salary` attribute in reverse order
+    associates.sort(key=lambda x: (x.name, -x.salary))
+
+    # [{James, Finance, 80000}, {James, Telecom, 70000}, {Robert, Construction, 60000}]
+    print(associates)
+
+    # sort by `name` and `dept` attribute
+    associates.sort(key=attrgetter('name', 'dept'))
+
+    # [{James, Finance}, {James, Telecom}, {Robert, Construction}]
+    print(associates)
