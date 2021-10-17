@@ -65,24 +65,26 @@ class BankSystem():
 
     @staticmethod
     def view_all():
-        for member in BankSystem.AllMember:
+        # sort customer by their balance (descending)
+        all_customer = sorted(BankSystem.AllMember, key=SortCustomer, reverse=True)
+        for member in all_customer:
             member.view_balance()
 
     @staticmethod
     def countMember():
         if (len(BankSystem.AllMember) == 0):
-            print("There is nobody in system.")
+            print("There is nobody in the system.")
         elif (len(BankSystem.AllMember) == 1):
-            print("There is 1 person in system.")
+            print("There is 1 person in the system.")
         else:
-            print("There are", len(BankSystem.AllMember), "people in system.")
+            print("There are", len(BankSystem.AllMember), "people in the system.")
 
         if (Bank.userCount - len(BankSystem.AllMember) == 0):
             print("There is nobody left.")
         elif (Bank.userCount - len(BankSystem.AllMember) == 1):
-            print("There is 1 person who is not in system.")
+            print("There is 1 person who is not in the system.")
         else:
-            print("There are", Bank.userCount - len(BankSystem.AllMember), "people who are not in system.")
+            print("There are", Bank.userCount - len(BankSystem.AllMember), "people who are not in the system.")
 
 # Function
 def Instruction():
@@ -101,6 +103,9 @@ def CustomerInformation():
     age = int(input("Enter age : "))
     gender = input("Enter gender : ")
     return name, age, gender
+
+def SortCustomer(customer):
+    return customer.balance
 
 def main():
     run = True
