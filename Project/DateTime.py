@@ -1,13 +1,29 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
+""" Datetime module : can access attribute date, weekday, timestamp(), date'attribute and time's attribute"""
 # get current day
 date = datetime.today().strftime('%A')
 print(date)                                                                     # Tuesday
 
+past_day = datetime(2020, 5, 17)
+print(past_day)                                                                 # 2020-05-17 00:00:00
+
+t1 = datetime(year = 2018, month = 7, day = 12)
+t2 = datetime(year = 2017, month = 12, day = 23)
+t3 = t1 - t2
+print("t3 =", t3)                                                               # t3 = 201 days, 0:00:00
+
+# timedelta
+t1 = timedelta(weeks = 2, days = 5, hours = 1, seconds = 33)
+t2 = timedelta(days = 4, hours = 11, minutes = 4, seconds = 54)
+t3 = t1 - t2
+print("t3 =", t3)                                                               # t3 = 14 days, 13:55:39
+print("Total seconds =", t3.total_seconds())                                    # Total seconds = 1259739.0
+
 # UTC
 UTC = pytz.utc
-print("UTC in Default Format :", datetime.now(UTC).strftime("%X"))              # UTC in Default Format : 13:14:11
+print("UTC in Default Format :", datetime.now(UTC))                             # UTC in Default Format : 2022-01-11 14:40:06.914492+00:00
 
 # London
 IST = pytz.timezone('Europe/London')
@@ -35,9 +51,11 @@ print("time:", time)                                                            
 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 print("date and time:", date_time)                                              # date and time: 01/11/2022, 20:26:11
 
+""" Timestamp is the number of seconds between specific date and January 1, 1970 at UTC """
 # string from timestamp
 timestamp = 1528797322
 date_time = datetime.fromtimestamp(timestamp)
+
 print("Date time object:", date_time)                                           # Date time object: 2018-06-12 16:55:22
 
 d = date_time.strftime("%m/%d/%Y, %H:%M:%S")
@@ -60,6 +78,36 @@ print("Output 6:", d)                                                           
 
 d = date_time.strftime("%X")
 print("Output 7:", d)                                                           # 16:55:22
+
+""" date module : can access attribute year, month, day"""
+from datetime import date
+
+# date object of today's date
+today = date.today() 
+
+print("Today:", today)                                                          # Today: 2022-01-11
+print("Current year:", today.year)                                              # Current year: 2022
+print("Current month:", today.month)                                            # Current month: 1
+print("Current day:", today.day)                                                # Current day: 11
+
+""" Time module : can access attribute hour, minute, second, microsecond"""
+from datetime import time
+
+# time(hour = 0, minute = 0, second = 0)
+a = time()
+print("a =", a)                                                                 # a = 00:00:00
+
+# time(hour, minute and second)
+b = time(11, 34, 56)
+print("b =", b)                                                                 # b = 11:34:56
+
+# time(hour, minute and second)
+c = time(hour = 11, minute = 34, second = 56)
+print("c =", c)                                                                 # c = 11:34:56
+
+# time(hour, minute, second, microsecond)
+d = time(11, 34, 56, 234566)
+print("d =", d)                                                                 # d = 11:34:56.234566
 
 """ Find number of days between two given dates """
 # To store number of days in all months from January to Dec.

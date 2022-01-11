@@ -1,9 +1,9 @@
 # Format use in strftime()
 
-| Directive	| Meaning | Example |
-| ----------- | ----------- | ----------- |
+| Directive	    | Meaning                                                                                                                 | Example |
+| -----------   | -----------                                                                                                             | ----------- |
 | %a	        | Abbreviated weekday name.	                                                                                              | Sun, Mon, ... |
-| %A	        | Full weekday name.	Sunday,                                                                                           | Monday, ... |
+| %A	        | Full weekday name.	                                                                                                  | Sunday, Monday, ... |
 | %w	        | Weekday as a decimal number.	                                                                                          | 0, 1, ..., 6 |
 | %d	        | Day of the month as a zero-padded decimal.	                                                                          | 01, 02, ..., 31 |
 | %-d	        | Day of the month as a decimal number.	                                                                                  | 1, 2, ..., 30 |
@@ -24,13 +24,14 @@
 | %S	        | Second as a zero-padded decimal number.	                                                                              | 00, 01, ..., 59 |
 | %-S	        | Second as a decimal number.	                                                                                          | 0, 1, ..., 59 |
 | %f	        | Microsecond as a decimal number, zero-padded on the left.	                                                              | 000000 - 999999 |
-| %z	        | UTC offset in the form +HHMM or -HHMM.	                                                                              | |
-| %Z	        | Time zone name.	                                                                                                      | |
+| %z	        | UTC offset in the form +HHMM or -HHMM.	                                                                              | +0100 |
+| %Z	        | Time zone name.	                                                                                                      | CST |
 | %j	        | Day of the year as a zero-padded decimal number.	                                                                      | 001, 002, ..., 366 |
 | %-j	        | Day of the year as a decimal number.	                                                                                  | 1, 2, ..., 366 |
 | %U	        | Week number of the year (Sunday as the first day of the week). All days in Sunday are considered to be in week 0.       | 00, 01, ..., 53 |
 | %W	        | Week number of the year (Monday as the first day of the week). All days in Monday are considered to be in week 0.       | 00, 01, ..., 53 |
 | %c	        | Locale’s appropriate date and time representation.	                                                                  | Mon Sep 30 07:06:05 2013 |
+| %C	        | Century of that year.                             	                                                                  | 20 |
 | %x	        | Locale’s appropriate date representation.	                                                                              | 09/30/13 |
 | %X	        | Locale’s appropriate time representation.	                                                                              | 07:06:05 |
-| %%	        | A literal '%' character.	                                                                                              | %  |
+| %%	        | A literal '%' character.	                                                                                              | % |
