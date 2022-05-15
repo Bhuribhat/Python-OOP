@@ -1,22 +1,17 @@
-# GUI.py
 import pygame
-from solver import solve, valid
+from solver import solve, valid, initBoard, SOLUTION
 import time
 pygame.font.init()
 
+WHITE = (255, 255, 255)
+GREY = (128, 128, 128)
+DARK = (49, 49, 49)
+BLACK = (0, 0, 0)
+ORANGE = (255, 165, 0)
+RED = (255, 0, 0)
 
 class Grid:
-    board = [
-        [7, 8, 0, 4, 0, 0, 1, 2, 0],
-        [6, 0, 0, 0, 7, 5, 0, 0, 9],
-        [0, 0, 0, 6, 0, 1, 0, 7, 8],
-        [0, 0, 7, 0, 4, 0, 2, 6, 0],
-        [0, 0, 1, 0, 5, 0, 9, 3, 0],
-        [9, 0, 4, 0, 6, 0, 0, 0, 5],
-        [0, 7, 0, 3, 0, 0, 0, 1, 2],
-        [1, 2, 0, 0, 0, 7, 4, 0, 0],
-        [0, 4, 9, 2, 0, 6, 0, 0, 7]
-    ]
+    board = initBoard
 
     def __init__(self, rows, cols, width, height):
         self.rows = rows
@@ -51,13 +46,13 @@ class Grid:
     def draw(self, win):
         # Draw Grid Lines
         gap = self.width / 9
-        for i in range(self.rows+1):
+        for i in range(self.rows + 1):
             if i % 3 == 0 and i != 0:
                 thick = 4
             else:
-                thick = 1
-            pygame.draw.line(win, (0,0,0), (0, i*gap), (self.width, i*gap), thick)
-            pygame.draw.line(win, (0, 0, 0), (i * gap, 0), (i * gap, self.height), thick)
+                thick = 2
+            pygame.draw.line(win, BLACK, (0, i * gap), (self.width, i * gap),  thick)
+            pygame.draw.line(win, BLACK, (i * gap, 0), (i * gap, self.height), thick)
 
         # Draw Cubes
         for i in range(self.rows):
@@ -72,6 +67,7 @@ class Grid:
 
         self.cubes[row][col].selected = True
         self.selected = (row, col)
+        return (row, col)
 
     def clear(self):
         row, col = self.selected
@@ -87,7 +83,7 @@ class Grid:
             gap = self.width / 9
             x = pos[0] // gap
             y = pos[1] // gap
-            return (int(y),int(x))
+            return (int(y), int(x))
         else:
             return None
 
@@ -119,15 +115,26 @@ class Cube:
         x = self.col * gap
         y = self.row * gap
 
+        # Draw Grid Line
         if self.temp != 0 and self.value == 0:
-            text = fnt.render(str(self.temp), 1, (128,128,128))
-            win.blit(text, (x+5, y+5))
+            text = fnt.render(str(self.temp), 1, GREY)
+            win.blit(text, (x + 5, y + 5))
         elif not(self.value == 0):
-            text = fnt.render(str(self.value), 1, (0, 0, 0))
-            win.blit(text, (x + (gap/2 - text.get_width()/2), y + (gap/2 - text.get_height()/2)))
+            text = fnt.render(str(self.value), 1, WHITE)
+            win.blit(text, (x + (gap / 2 - text.get_width() / 2), y + (gap / 2 - text.get_height() / 2)))
 
+        # Draw Selected
         if self.selected:
-            pygame.draw.rect(win, (255,0,0), (x,y, gap ,gap), 3)
+            pygame.draw.rect(win, ORANGE, (x, y, gap ,gap), 3)
+
+        # Draw Game Over
+        FONT = pygame.font.SysFont("comicsans", 70)
+        if game_state == -1:
+            title = FONT.render("Game Over", 1, RED)
+            win.blit(title, (270 - title.get_width() / 2, 220))
+        elif game_state == 1:
+            title = FONT.render("You Win!!", 1, ORANGE)
+            win.blit(title, (270 - title.get_width() / 2, 220))
 
     def set(self, val):
         self.value = val
@@ -137,38 +144,44 @@ class Cube:
 
 
 def redraw_window(win, board, time, strikes):
-    win.fill((255,255,255))
+    win.fill(DARK)
+
     # Draw time
     fnt = pygame.font.SysFont("comicsans", 28)
-    text = fnt.render("Time: " + format_time(time), 1, (0,0,0))
-    win.blit(text, (540 - 160, 560))
+    text = fnt.render("Time: " + format_time(time), 1, WHITE)
+    win.blit(text, (540 - 190, 560))
+
     # Draw Strikes
-    text = fnt.render("X " * strikes, 1, (255, 0, 0))
+    text = fnt.render("X " * strikes, 1, RED)
     win.blit(text, (20, 560))
+
     # Draw grid and board
     board.draw(win)
 
 
 def format_time(secs):
-    sec = secs%60
-    minute = secs//60
-    hour = minute//60
-
-    mat = " " + str(minute) + ":" + str(sec)
-    return mat
+    sec = secs % 60
+    minute = secs // 60
+    hour = minute // 60
+    total = f" {str(hour)}:{str(minute)}:{sec}"
+    return total
 
 
 def main():
-    win = pygame.display.set_mode((540,600))
+    global game_state
+    game_state = 0
+    win = pygame.display.set_mode((540, 600))
     pygame.display.set_caption("Sudoku")
     board = Grid(9, 9, 540, 540)
     key = None
     run = True
     start = time.time()
     strikes = 0
-    while run:
+    location = (0, 0)
 
-        play_time = round(time.time() - start)
+    while run:
+        if game_state == 0:
+            play_time = round(time.time() - start)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -201,27 +214,64 @@ def main():
                         if board.place(board.cubes[i][j].temp):
                             print("Success")
                         else:
-                            print("Wrong")
-                            strikes += 1
+                            if board.cubes[i][j].temp == 0:
+                                print("Wrong")
+                                strikes += 1
                         key = None
 
+                        # Draw Game Over
                         if board.is_finished():
-                            print("Game over")
-                            run = False
+                            game_state = 1
+                            print("You Won!!")
+                        elif strikes > 5 or board.is_finished():
+                            game_state = -1
+                            print("Game Over")
+
+                if event.key == pygame.K_q:
+                    run = False
+                if event.key == pygame.K_SPACE:
+                    for row in range(9):
+                        for col in range(9):
+                            key = SOLUTION[row][col]
+                            board.select(row, col)
+                            board.sketch(key)
+                            # board.place(board.cubes[row][col].temp)
+                    location = board.select(row, col)
+                    key = None
+                    print("You Won!!")
+
+                if event.key == pygame.K_UP:
+                    y_pos = (location[0] - 1) % 9
+                    location = board.select(y_pos, location[1])
+                    key = None
+                if event.key == pygame.K_DOWN:
+                    y_pos = (location[0] + 1) % 9
+                    location = board.select(y_pos, location[1])
+                    key = None
+                if event.key == pygame.K_RIGHT:
+                    x_pos = (location[1] + 1) % 9
+                    location = board.select(location[0], x_pos)
+                    key = None
+                if event.key == pygame.K_LEFT:
+                    x_pos = (location[1] - 1) % 9
+                    location = board.select(location[0], x_pos)
+                    key = None
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 clicked = board.click(pos)
                 if clicked:
-                    board.select(clicked[0], clicked[1])
+                    location = board.select(clicked[0], clicked[1])
                     key = None
 
         if board.selected and key != None:
             board.sketch(key)
 
+        # if game_state == 0:
         redraw_window(win, board, play_time, strikes)
         pygame.display.update()
 
 
-main()
-pygame.quit()
+if __name__ == '__main__':
+    main()
+    pygame.quit()
